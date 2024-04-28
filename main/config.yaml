@@ -1,4 +1,4 @@
-baseURL: "https://quanianitis.com"
+baseURL: "/"
 languageCode: "en-us"
 title: "Ian"
 themesDir: "../themes"
