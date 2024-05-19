@@ -86,15 +86,10 @@ module.exports = () => {
         test: /\.svg$/,
         use: ['@svgr/webpack'],
       })
-      config.optimization.splitChunks.cacheGroups = {
-      vendor: {
-        chunks: 'all',
-      },
-    };
 
-    config.optimization.splitChunks = {
-      maxSize: 50000, // Limit each chunk to 25 KB
-    };
+      config.optimization.splitChunks = ({
+        maxSize: 25000, // Limit each chunk to 25 KB
+      })
       return config
     },
   })
