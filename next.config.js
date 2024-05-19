@@ -86,6 +86,13 @@ module.exports = () => {
         test: /\.svg$/,
         use: ['@svgr/webpack'],
       })
+      config.optimization.splitChunks.cacheGroups = {
+      vendor: {
+        test: /[\\/]node_modules[\\/]/,
+        name: 'vendor',
+        chunks: 'all',
+      },
+    };
 
     config.optimization.splitChunks = {
       maxSize: 50000, // Limit each chunk to 25 KB
