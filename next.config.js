@@ -87,6 +87,8 @@ module.exports = () => {
         use: ['@svgr/webpack'],
       })
 
+      config.cache = false
+
       config.optimization.splitChunks = ({
         maxSize: 25000, // Limit each chunk to 25 KB
       })
