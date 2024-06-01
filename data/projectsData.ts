@@ -11,28 +11,6 @@ const projectsData: Project[] = [
     builtWith: ['React', 'Bootstrap', 'FeathersJS', 'MySQL', 'RabbitMQ'],
   },
   {
-    type: 'work',
-    title: 'Military 7A Bidding',
-    description:
-      'Creating a web-based system designed for the efficient management of bidding packages related to medical supplies information.',
-    imgSrc: '/static/images/projects/military-7a-bidding.png',
-    builtWith: ['NestJS', 'PosgreSQL', 'JWT', 'VueJS', 'Tailwind'],
-  },
-  {
-    type: 'self',
-    title: 'Personal website',
-    imgSrc: '/static/images/projects/karhdo-blog.png',
-    repo: 'karhdo.dev',
-    builtWith: ['Next.js', 'Tailwind', 'Typescript', 'Prisma', 'Umami'],
-  },
-  {
-    type: 'self',
-    title: 'Website Selling Food',
-    imgSrc: '/static/images/projects/website-selling-food.png',
-    repo: 'Website-Selling-Food',
-    builtWith: ['PHP', 'Laravel', 'MySQL', 'VueJS', 'Bootstrap'],
-  },
-  {
     type: 'self',
     title: 'Simulate Basic Geometry',
     description: 'Explore the World of Basic 3D Modeling Simulations on Our Website.',

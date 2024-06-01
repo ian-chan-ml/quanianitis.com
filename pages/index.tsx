@@ -21,7 +21,6 @@ import TypedBios from '@/components/homepage/TypedBios';
 import ShortDescription from '@/components/homepage/ShortDescription';
 import BlogLinks from '@/components/homepage/BlogLinks';
 import SpotifyNowPlaying from '@/components/homepage/SpotifyNowPlaying';
-import PopularTags from '@/components/homepage/PopularTags';
 import Avatar from '@/components/homepage/Avatar';
 
 const MAX_DISPLAY = 3;
@@ -72,9 +71,8 @@ export default function Home({ posts }: InferGetStaticPropsType<typeof getStatic
         </div>
       </div>
 
-      <PopularTags />
-
       {/* List all post */}
+
       <div className="divide-y divide-gray-200 dark:divide-gray-700">
         <div className="space-y-2 py-6 md:space-y-5">
           <h1 className="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-5xl md:leading-14">
