@@ -1,14 +1,12 @@
-import { useTranslation } from 'next-i18next'
-
-export function ShortDescription() {
-  let { t } = useTranslation('common')
-
+const ShortDescription = () => {
   return (
-    <div className="mb-8 mt-4">
-      <p>{t('bio_start_coding')}</p>
-      <p>{t('bio_first_job')}</p>
-      <p>{t('bio_passion')}</p>
-      <p>{t('bio_blog_purpose')}</p>
+    <div className="mb-4 mt-4">
+      <p>I started learning to code in 2019 when I started college.</p>
+      <p>I landed my first job as a Back-end Developer in 2021.</p>
+      <p>I have a passion for JavaScript/Typescript and website development.</p>
+      <p>I started this blog to practice my skill and share my knowledge.</p>
     </div>
-  )
-}
+  );
+};
+
+export default ShortDescription;

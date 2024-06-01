@@ -1,67 +1,65 @@
-import { useTranslation } from 'next-i18next'
-import { useEffect, useRef } from 'react'
-import Typed from 'typed.js'
-import { Twemoji } from '../Twemoji'
+import React from 'react';
+import Typed from 'typed.js';
 
-function createTypedInstance(el: HTMLElement) {
-  return new Typed(el, {
-    stringsElement: '#bios',
-    typeSpeed: 40,
-    backSpeed: 10,
-    loop: true,
-    backDelay: 1000,
-  })
-}
+import Twemoji from '@/components/Twemoji';
 
-export function TypedBios() {
-  let el = useRef(null)
-  let typed = useRef(null)
-  let tr = useTranslation('common')
+const TypedBios = () => {
+  const el = React.useRef(null);
+  const typed = React.useRef(null);
 
-  useEffect(() => {
-    if (tr.ready) {
-      typed.current?.destroy()
-      typed.current = createTypedInstance(el.current)
-    }
-  }, [tr])
+  React.useEffect(() => {
+    typed.current = new Typed(el.current, {
+      stringsElement: '#bios',
+      typeSpeed: 40,
+      backSpeed: 10,
+      loop: true,
+      backDelay: 1000,
+    });
+    return () => typed.current.destroy();
+  }, []);
 
   return (
     <div>
       <ul id="bios" className="hidden">
-        <li>{tr.t('bio_1')}</li>
-        <li>{tr.t('bio_2')}</li>
-        <li>{tr.t('bio_3')}</li>
-        <li>{tr.t('bio_4')}</li>
-        <li>{tr.t('bio_5')}</li>
-        <li>{tr.t('bio_6')}</li>
-        <li>{tr.t('bio_7')}</li>
-        <li>{tr.t('bio_8')}</li>
-        <li>{tr.t('bio_9')}</li>
         <li>
-          {tr.t('bio_10')} <Twemoji emoji="dog" />
+          I'm aliased as <b className="font-medium">Karhdo</b> at work.
         </li>
         <li>
-          {tr.t('bio_11')}
+          I live in <b className="font-medium">Ho Chi Minh, Viet Nam</b>.
+        </li>
+        <li>
+          I was born in the beautiful <b className="font-medium">Quang Ngai</b> city.
+        </li>
+        <li>
+          My first programming language I learned was <b className="font-medium">C++</b>.
+        </li>
+        <li>I love web development.</li>
+        <li>
+          I'm focusing on building <b className="font-medium">Social Analytics Software</b>.
+        </li>
+        <li>
+          I work mostly with <b className="font-medium">Javascript/Typescript</b> technologies.
+        </li>
+        <li>
+          I'm a dog-person <Twemoji emoji="dog" />.
+        </li>
+        <li>
+          I'm a sporty-guy. I love
           <span className="ml-1">
-            <Twemoji emoji="soccer-ball" />,
-            <Twemoji emoji="man-swimming" />,
-            <Twemoji emoji="ping-pong" />,
-            <Twemoji emoji="volleyball" />
+            <Twemoji emoji="tennis" />, <Twemoji emoji="soccer-ball" />
           </span>
-        </li>
-        <li>{tr.t('bio_12')}</li>
-        <li>
-          {tr.t('bio_13')} <Twemoji emoji="musical-keyboard" /> & <Twemoji emoji="guitar" />
-        </li>
-        <li>{tr.t('bio_14')}</li>
-        <li>
-          {tr.t('bio_15')} <Twemoji emoji="chess-pawn" />
+          .
         </li>
         <li>
-          {tr.t('bio_16')} <Twemoji emoji="video-game" />.
+          I love listening <Twemoji emoji="musical-keyboard" /> and rap music.
+        </li>
+        <li>
+          I love playing video game <Twemoji emoji="video-game" />, LoL is my favorite one.
         </li>
       </ul>
       <span ref={el} className="text-neutral-900 dark:text-neutral-200" />
     </div>
-  )
-}
+  );
+};
+
+export default TypedBios;
