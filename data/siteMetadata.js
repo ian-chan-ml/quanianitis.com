@@ -3,9 +3,10 @@ const siteMetadata = {
   title: 'Proactively Reactive',
   author: 'Quan Ian Chan',
   headerTitle: 'Proactively Reactive',
-  description: 'My blog on my day-to-day as a Site Reliability Engineer, maintaining people relationships and machine relationships.',
+  description:
+    'My blog on my day-to-day as a Site Reliability Engineer, maintaining people relationships and machine relationships.',
   language: 'en-us',
-  theme: 'system', // system, dark or light
+  theme: 'dark', // system, dark or light
   siteUrl: 'https://quanianitis.com',
   siteRepo: 'https://github.com/ian-chan-ml/quanianitis.com',
   siteLogo: '/static/images/logo.png',
@@ -14,10 +15,9 @@ const siteMetadata = {
   email: 'contact@quanianitis.com',
   github: 'https://github.com/ian-chan-ml',
   x: 'https://twitter.com/quanianitis',
-  facebook: 'https://facebook.com',
   youtube: 'https://youtube.com/Riptide',
   linkedin: 'https://www.linkedin.com/in/quan-ian-c',
-  threads: 'https://www.threads.net',
+  threads: 'https://www.threads.net/quanianitis',
   instagram: 'https://www.instagram.com/ian_.cq',
   locale: 'en-US',
   analytics: {

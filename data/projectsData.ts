@@ -1,26 +1,22 @@
 interface Project {
-  title: string,
-  description: string,
-  href?: string,
-  imgSrc?: string,
+  title: string
+  description: string
+  href?: string
+  imgSrc?: string
 }
 
 const projectsData: Project[] = [
   {
-    title: 'A Search Engine',
-    description: `What if you could look up any information in the world? Webpages, images, videos
-    and more. Google has many features to help you find exactly what you're looking
-    for.`,
+    title: 'Downpour - Flood Detection Mobile Application',
+    description: `Downpour is a Flood Detection Mobile Application that is part of my Taylor's University's Final Year Project. Downpour uses image recognition to detect potential floods in your area, provides flood analytics and sends flood emergency alerts to users in the vicinity. It is built with Firebase, NoSQL, Tensorflow Lite, CNN.`,
     imgSrc: '/static/images/google.png',
-    href: 'https://www.google.com',
+    href: 'https://www.github.com/ian-chan-ml/downpour',
   },
   {
-    title: 'The Time Machine',
-    description: `Imagine being able to travel back in time or to the future. Simple turn the knob
-    to the desired date and press "Go". No more worrying about lost keys or
-    forgotten headphones with this simple yet affordable solution.`,
+    title: 'Homelab Environment',
+    description: `Launched a K3s environment that incorporates GitOps principles, integrates standard networking practices and monitors the 3 pillars of observability. The homelab hosts my media server, personal financial management server and a myriad of MLOps projects.`,
     imgSrc: '/static/images/time-machine.jpg',
-    href: '/blog/the-time-machine',
+    href: 'https://github.com/ian-chan-ml/homelab',
   },
 ]
 
