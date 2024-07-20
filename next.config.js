@@ -14,7 +14,7 @@ const ContentSecurityPolicy = `
   connect-src *;
   font-src 'self';
 `
-  // frame-src giscus.app
+// frame-src giscus.app
 
 const securityHeaders = [
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP
@@ -90,9 +90,9 @@ module.exports = () => {
 
       config.cache = false
 
-      config.optimization.splitChunks = ({
+      config.optimization.splitChunks = {
         maxSize: 25000, // Limit each chunk to 25 KB
-      })
+      }
       return config
     },
   })

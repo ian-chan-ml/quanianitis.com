@@ -1,0 +1,173 @@
+---
+title: MSK Multi-VPC Connectivity
+date: '2024-07-20'
+tags: ['markdown', 'code', 'features']
+draft: false
+summary: Supporting multi-tenancy for MSK clusters with VPC Connectivity, supported by Privatelink
+---
+
+# Analysis: MSK Multi-VPC Connectivity
+
+Amazon Multi-VPC Private Connection (aka privatelink) for MSK enables cross-account VPC access over AWS Privatelink. This functionality enables the establishment of private network links between VPCs as if they’re in the same VPC.
+
+## Architecture of AWS MSK Privatelink (Establishment of Multi-VPC Connectivity)
+
+The main components for MSK Privatelink to set up are:
+
+1. MSK multi-VPC Connectivity (264207711414) - Configured via MSK resource
+2. MSK Cluster Policy (264207711414) - Allow which principal from which account to enact actions on your MSK resource
+3. MSK Client-managed VPC Connections (From client account) - Set VPC, subnets and its security group for connection request
+
+## Purpose
+
+By leveraging AWS PrivateLink, multi-VPC private connectivity simplifies the networking infrastructure for multi-VPC and cross-account connectivity, ensuring that all traffic remains within the AWS network.
+This does not solve cross-account IAM access. We have a dedicated prod-crossaccount-even-msk-role for cross-account interoperability.
+The other alternative connectivity solutions include:
+
+### Advantages
+
+MSK Multi-VPC Private Connectivity automates the operational management of AWS Privatelink and allows the dynamic connectivity of IPs even if they overlap/conflict.
+
+1. Automatically updates the privatelink target of your brokers in the event of an IP change event (such as broker restarts, security patches, leader failover).
+2. Managed solution for privatelink (Think VPC endpoint connecting to service). The other self-managed privatelink solution with NLBs, which is our current setup, looks like this -
+
+This means there are many more moving pieces to manage and is not ideal when scaling horizontally.
+
+### Disadvantages
+
+1. Must support either SASL IAM or TLS authentication. So our old non-IAM enabled MSK clusters will not be able to support multi-VPC Connectivity
+2. Broker rotation and restart is needed, an estimated 30 minutes of operations is required.
+3. Limitations with MSK Connect
+4. Cluster Policy still can only support the general kafka-cluster:verbs but does not support kafka-connect API. This still needs to be researched and confirmed
+5. Not supported go cross-regions
+
+## Setting up multi-VPC Connectivity
+
+### Step 1: Set up MSK multi-VPC Connectivity
+
+VPC Connectivity Info from the MSK Cluster is your VPC Endpoint Service.
+As of now, our module modules/aws/msk_cluster does not support the variable for connectivity, you’ll need to reach out to an SRE to enable it for you.
+But the terraform code should look like this if it’s needed:
+
+```
+resource "aws_msk_cluster" "example" {
+  broker_node_group_info {
+    connectivity_info {
+      vpc_connectivity {
+        client_authentication {
+          sasl {
+            iam = true
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+// TODO: to be set as lifecycle ignore when made changes in console
+Or in console as shown here -
+AWS Console → MSK Cluster → Properties → Networking Settings → Edit → Turn on multi-VPC Connectivity →
+
+Select authentication method (IAM is preferred)
+
+You’ll need to wait for brokers to do a rolling reboot for all your broker nodes. This may take up to 30 minutes.
+
+### Step 2: Attaching Cluster Policy
+
+Define the principal with your account number, region and IAM role ARN. Please see this PR for an example.
+
+```
+data "aws_iam_policy_document" "stag_msk_with_privatelink_cluster_policy" {
+  statement {
+    effect = "Allow"
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:${data.aws_partition.roar_sandbox.partition}:iam::617208391173:root"]
+    }
+
+    actions = [
+      "kafka:CreateVpcConnection",
+      "kafka:GetBootstrapBrokers",
+      "kafka:DescribeCluster",
+      "kafka:DescribeClusterV2",
+    ]
+
+    resources = [module.staging_msk_with_privatelink_test.arn]
+  }
+}
+```
+
+// TODO: test out kafkaconnect service IAM actions
+
+### Step 3: Set up MSK Managed VPC Connections from client account
+
+MSK VPC Connection is your VPC Endpoint in this case.
+Pre-requisites
+
+1. MSK Cluster ARN
+2. Subnets to mirror MSK server side’s amount of subnets
+   Set up terraform for MSK VPC Connection. Example in this PR here
+
+```
+resource "aws_msk_vpc_connection" "this" {
+  target_cluster_arn = "arn:aws:kafka:us-east-1:317292977969:cluster/shared-msk/8f6bb91b-5c48-4441-a379-c1f40d6fe75a-1"
+  authentication     = "SASL_IAM"
+
+  vpc_id          = "devVPC-MyVPC"
+  security_groups = [aws_security_group.this[0].id]
+  client_subnets = [
+    for subnet in data.aws_subnet.private : subnet.id
+  ]
+}
+```
+
+Attached subnets to the managed VPC connection has to be 3, if there are 3 subnets in the subsequent MSK servers.
+Please read more on the authentication types and variables in this terraform documentation.
+Here’s how it looks like in console
+
+### Step 4: Attach a Security Group to your MSK VPC Connection
+
+The VPC Connection needs a security group attached to it which will be sent to the MSK cluster as a security group to allow where the traffic it is supposed to allow.
+
+```
+resource "aws_security_group" "this" {
+  name   = "shared-msk-vpc-connectivity"
+  vpc_id = "devVPC-MyVPC"
+
+  dynamic "ingress" {
+    for_each = data.aws_security_group.eks_node
+    content {
+      from_port       = 14001
+      to_port         = 14100
+      protocol        = "tcp"
+      security_groups = [ingress.value.id]
+      description     = "EKS Worker Node - ${ingress.value.name}"
+    }
+  }
+
+  tags = {
+    Name      = "shared-msk-vpc-connectivity"
+    ManagedBy = "Terraform"
+  }
+}
+```
+
+In general, this will need the EKS security group attached to your security group if this is an EKS service that it will communicate to. Also, we will need twingate security group for dev if they request for it.
+Inbound Rules, you need to add a rule for Custom TCP Traffic for port ranges 14001-14100. The multi-VPC network load balancer is listening on the 14001-14100 port ranges.
+
+### Step 5: Verify your privatelink connection
+
+Get the connection string from MSK privatelink in the managed VPC connection tab
+
+As the NLBs are set to listen to port 14001-14100, you’ll have to direct all requests from port 9098 (IAM port) to port 14001-14003.
+Make sure to have msk-with-iam-auth library in your classpath when trying to test your connection.
+
+## Next Steps
+
+### How to connect to IAM Auth Enabled MSK Cluster
+
+Kafka: Deploy a Producer and Consumer application connecting to an IAM-enabled MSK Cluster
+References
+
+1. https://docs.aws.amazon.com/msk/latest/developerguide/aws-access-mult-vpc.html
