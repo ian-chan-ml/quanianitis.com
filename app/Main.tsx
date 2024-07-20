@@ -12,7 +12,7 @@ import { genPageMetadata } from 'app/seo'
 const MAX_DISPLAY = 5
 
 export default function Home({ posts }) {
-  const author = allAuthors.find((p) => p.slug === 'default') as Authors
+  const author = allAuthors.find((p) => p.slug === 'home') as Authors
   const mainContent = coreContent(author)
 
   return (
@@ -90,11 +90,6 @@ export default function Home({ posts }) {
           >
             All Posts &rarr;
           </Link>
-        </div>
-      )}
-      {siteMetadata.newsletter?.provider && (
-        <div className="flex items-center justify-center pt-4">
-          <NewsletterForm />
         </div>
       )}
     </>

@@ -4,7 +4,7 @@ const siteMetadata = {
   author: 'Quan Ian Chan',
   headerTitle: 'Proactively Reactive',
   description:
-    'My blog on my day-to-day as a Site Reliability Engineer, maintaining people relationships and machine relationships.',
+    'Welcome to my blog! This is where I write my day-to-day as a Site Reliability Engineer, maintaining machine and people relationships.',
   language: 'en-us',
   theme: 'dark', // system, dark or light
   siteUrl: 'https://quanianitis.com',
