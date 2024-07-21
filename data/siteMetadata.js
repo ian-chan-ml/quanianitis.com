@@ -14,12 +14,10 @@ const siteMetadata = {
   mastodon: 'https://mastodon.social/@mastodonuser',
   email: 'contact@quanianitis.com',
   github: 'https://github.com/ian-chan-ml',
-  x: 'https://twitter.com/quanianitis',
-  youtube: 'https://youtube.com/Riptide',
   linkedin: 'https://www.linkedin.com/in/quan-ian-c',
   threads: 'https://www.threads.net/quanianitis',
   instagram: 'https://www.instagram.com/ian_.cq',
-  locale: 'en-US',
+  locale: 'en-MY',
   analytics: {
     // If you want to use an analytics provider you have to add it to the
     // content security policy in the `next.config.js` file.

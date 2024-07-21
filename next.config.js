@@ -14,7 +14,6 @@ const ContentSecurityPolicy = `
   connect-src *;
   font-src 'self';
 `
-// frame-src giscus.app
 
 const securityHeaders = [
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP
@@ -54,12 +53,18 @@ const securityHeaders = [
   },
 ]
 
+const output = process.env.EXPORT ? 'export' : undefined
+const basePath = process.env.BASE_PATH || undefined
+const unoptimized = process.env.UNOPTIMIZED ? true : undefined
+
 /**
  * @type {import('next/dist/next-server/server/config').NextConfig}
  **/
 module.exports = () => {
   const plugins = [withContentlayer, withBundleAnalyzer]
   return plugins.reduce((acc, next) => next(acc), {
+    output,
+    basePath,
     reactStrictMode: true,
     pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
     eslint: {
@@ -72,8 +77,8 @@ module.exports = () => {
           hostname: 'picsum.photos',
         },
       ],
+      unoptimized,
     },
-
     async headers() {
       return [
         {
@@ -88,11 +93,6 @@ module.exports = () => {
         use: ['@svgr/webpack'],
       })
 
-      config.cache = false
-
-      config.optimization.splitChunks = {
-        maxSize: 25000, // Limit each chunk to 25 KB
-      }
       return config
     },
   })
