@@ -3,6 +3,8 @@ title: MSK Multi-VPC Connectivity
 date: '2024-07-20'
 tags: ['kafka', 'privatelink', 'terraform']
 draft: false
+layout: PostBanner
+images: ['/static/images/msk/new_implementation.jpg']
 summary: Supporting multi-tenancy for MSK clusters with VPC Connectivity, supported by Privatelink
 ---
 
@@ -21,8 +23,8 @@ The main components for MSK Privatelink to set up are:
 ## Purpose
 
 By leveraging AWS PrivateLink, multi-VPC private connectivity simplifies the networking infrastructure for multi-VPC and cross-account connectivity, ensuring that all traffic remains within the AWS network.
-This does not solve cross-account IAM access. We have a dedicated prod-crossaccount-even-msk-role for cross-account interoperability.
-The other alternative connectivity solutions include:
+
+![previous](/static/images/msk/old_implementation.jpg)
 
 ### Advantages
 
