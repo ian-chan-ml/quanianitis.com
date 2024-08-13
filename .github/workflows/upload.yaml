@@ -63,7 +63,7 @@ jobs:
         uses: 'google-github-actions/upload-cloud-storage@v2'
         with:
           path: './out'
-          destination: ${{ env.STAGING_URL }}
+          destination: 'staging.quanianitis.com'
 
   deploy-production:
     runs-on: ubuntu-latest
@@ -89,4 +89,4 @@ jobs:
         uses: 'google-github-actions/upload-cloud-storage@v2'
         with:
           path: './out'
-          destination: ${{ env.PRODUCTION_URL }}
+          destination: 'quanianitis.com'
