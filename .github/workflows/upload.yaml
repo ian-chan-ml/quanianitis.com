@@ -61,6 +61,20 @@ jobs:
           project_id: 'personal-quanianitis'
           workload_identity_provider: 'projects/114204026619/locations/global/workloadIdentityPools/quanianitis/providers/github'
 
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v2'     
+        with:
+          project_id: 'personal-quanianitis'
+
+      - name: Print gcloud info
+        run: gcloud info
+
+      - name: Print authenticated user
+        run: gcloud auth list
+
+      - name: Print project ID
+        run: gcloud config get-value project
+
       - id: 'deploy'
         uses: 'google-github-actions/upload-cloud-storage@v2'
         with:
