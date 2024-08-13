@@ -43,7 +43,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-and-upload
     environment: staging
-    if: github.event_name == 'push' 
+    if: github.event_name != 'release'
     permissions: # for google creds
       contents: read
       id-token: 'write'
@@ -64,6 +64,7 @@ jobs:
       - id: 'deploy'
         uses: 'google-github-actions/upload-cloud-storage@v2'
         with:
+          project_id: 'personal-quanianitis'
           path: './out'
           destination: 'staging.quanianitis.com'
           parent: false
@@ -93,6 +94,7 @@ jobs:
       - id: 'deploy'
         uses: 'google-github-actions/upload-cloud-storage@v2'
         with:
+          project_id: 'personal-quanianitis'
           path: './out'
           destination: 'quanianitis.com'
           parent: false
