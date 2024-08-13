@@ -37,9 +37,11 @@ jobs:
           EXPORT: 1
           UNOPTIMIZED: 1
 
-  deploy:
+  deploy-staging:
     runs-on: ubuntu-latest
     needs: build
+    environment: staging
+    if: github.event_name == 'push' 
     steps:
       - id: 'auth'
         uses: 'google-github-actions/auth@v2'
@@ -48,16 +50,23 @@ jobs:
 
       - id: 'deploy'
         uses: 'google-github-actions/upload-cloud-storage@v2'
-        if: github.event_name == 'push' 
-        environment: staging
         with:
           path: './out'
           destination: ${{ env.STAGING_URL }}
 
+  deploy-production:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'release' 
+    environment: production
+    steps:
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          workload_identity_provider: 'projects/114204026619/locations/global/workloadIdentityPools/quanianitis/providers/github'
+
       - id: 'deploy'
         uses: 'google-github-actions/upload-cloud-storage@v2'
-        if: github.event_name == 'release' 
-        environment: production
         with:
           path: './out'
           destination: ${{ env.PRODUCTION_URL }}
