@@ -51,6 +51,7 @@ jobs:
       - name: Pull artifacts
         uses: actions/download-artifact@v4
         with:
+          name: build-artifacts
           path: ./out
 
       - id: 'auth'
@@ -79,6 +80,7 @@ jobs:
       - name: Download Build Artifacts
         uses: actions/download-artifact@v4
         with:
+          name: build-artifacts
           path: ./out
 
       - id: 'auth'
