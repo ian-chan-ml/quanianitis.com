@@ -33,6 +33,11 @@ jobs:
         env:
           EXPORT: 1
           UNOPTIMIZED: 1
+      - name: Store artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifacts
+          path: ./out
 
   deploy-staging:
     runs-on: ubuntu-latest
@@ -43,9 +48,16 @@ jobs:
       contents: read
       id-token: 'write'
     steps:
+      - name: Pull artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
+          path: ./out
+
       - id: 'auth'
         uses: 'google-github-actions/auth@v2'
         with:
+          project_id: 'personal-quanianitis'
           workload_identity_provider: 'projects/114204026619/locations/global/workloadIdentityPools/quanianitis/providers/github'
 
       - id: 'deploy'
@@ -63,9 +75,16 @@ jobs:
       contents: read
       id-token: 'write'
     steps:
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
+          path: ./out
+
       - id: 'auth'
         uses: 'google-github-actions/auth@v2'
         with:
+          project_id: 'personal-quanianitis'
           workload_identity_provider: 'projects/114204026619/locations/global/workloadIdentityPools/quanianitis/providers/github'
 
       - id: 'deploy'
