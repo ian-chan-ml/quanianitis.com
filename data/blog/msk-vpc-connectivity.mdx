@@ -14,8 +14,8 @@ Amazon Multi-VPC Private Connection (aka privatelink) for MSK enables cross-acco
 
 The main components for MSK Privatelink to set up are:
 
-1. MSK multi-VPC Connectivity (264207711414) - Configured via MSK resource
-2. MSK Cluster Policy (264207711414) - Allow which principal from which account to enact actions on your MSK resource
+1. MSK multi-VPC Connectivity - Configured via MSK resource
+2. MSK Cluster Policy - Allow which principal from which account to enact actions on your MSK resource
 3. MSK Client-managed VPC Connections (From client account) - Set VPC, subnets and its security group for connection request
 
 ## Purpose
@@ -83,7 +83,7 @@ data "aws_iam_policy_document" "stag_msk_with_privatelink_cluster_policy" {
     effect = "Allow"
     principals {
       type        = "AWS"
-      identifiers = ["arn:${data.aws_partition.roar_sandbox.partition}:iam::617208391173:root"]
+      identifiers = ["arn:${data.aws_partition.roar_sandbox.partition}:iam::xxxxxxxxxx:root"]
     }
 
     actions = [
@@ -111,10 +111,10 @@ Pre-requisites
 
 ```
 resource "aws_msk_vpc_connection" "this" {
-  target_cluster_arn = "arn:aws:kafka:us-east-1:317292977969:cluster/shared-msk/8f6bb91b-5c48-4441-a379-c1f40d6fe75a-1"
+  target_cluster_arn = "arn:aws:kafka:us-east-1:xxxxxxxxxxxxxx:cluster/shared-msk/"
   authentication     = "SASL_IAM"
 
-  vpc_id          = "devVPC-MyVPC"
+  vpc_id          = "VPC"
   security_groups = [aws_security_group.this[0].id]
   client_subnets = [
     for subnet in data.aws_subnet.private : subnet.id
@@ -132,8 +132,8 @@ The VPC Connection needs a security group attached to it which will be sent to t
 
 ```
 resource "aws_security_group" "this" {
-  name   = "shared-msk-vpc-connectivity"
-  vpc_id = "devVPC-MyVPC"
+  name   = "msk-vpc-connectivity"
+  vpc_id = "vpc"
 
   dynamic "ingress" {
     for_each = data.aws_security_group.eks_node
@@ -147,7 +147,7 @@ resource "aws_security_group" "this" {
   }
 
   tags = {
-    Name      = "shared-msk-vpc-connectivity"
+    Name      = "msk-vpc-connectivity"
     ManagedBy = "Terraform"
   }
 }
